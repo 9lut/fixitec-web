@@ -1,0 +1,68 @@
+---
+import { Icon } from 'astro-icon/components';
+import TapeBand from './TapeBand.astro';
+import { contact } from '../config/site';
+
+interface Props {
+  title?: string;
+  desc?: string;
+  /** preselect a service in the contact form */
+  service?: string;
+}
+
+const {
+  title = 'ให้ FIXITEC ดูแลระบบ IT ของคุณ',
+  desc = 'บอกเราว่าองค์กรมีอุปกรณ์อะไรบ้าง ทีมผู้เชี่ยวชาญจะประเมินระบบและแนะนำแพ็กเกจที่เหมาะสม — ไม่มีค่าใช้จ่าย',
+  service,
+} = Astro.props;
+const href = service ? `/contact/?service=${service}` : '/contact/';
+
+const channels = [
+  { icon: 'mdi:phone', label: 'โทรหาเรา', value: contact.phone.display, href: contact.phone.href, external: false },
+  { icon: 'simple-icons:line', label: 'LINE', value: contact.line.id, href: contact.line.href, external: true },
+  { icon: 'mdi:email-outline', label: 'อีเมล', value: contact.email.display, href: contact.email.href, external: false },
+];
+---
+
+<TapeBand variant="single" />
+<section class="relative overflow-hidden bg-ink py-16 lg:py-24">
+  <div class="bg-fix-gradient absolute top-0 right-0 h-1.5 w-full" aria-hidden="true"></div>
+  <div class="bg-dots-dark absolute inset-0" aria-hidden="true"></div>
+  <img src="/images/x-mark.webp" alt="" aria-hidden="true" width="600" height="600" loading="lazy" class="pointer-events-none absolute -right-24 -bottom-28 w-[24rem] opacity-[0.08] sm:w-[32rem]" />
+
+  <div class="wrap relative">
+    <div class="grid grid-cols-1 gap-8 xl:grid-cols-[1.3fr_1fr] xl:items-end [&>*]:min-w-0">
+      <div data-reveal>
+        <p class="kicker kicker-dark">ปรึกษาฟรี</p>
+        <h2 class="h-section mt-4 text-white">{title}</h2>
+        <p class="mt-4 max-w-xl text-[17px] leading-relaxed text-white/70">{desc}</p>
+      </div>
+      <div class="xl:justify-self-end" data-reveal>
+        <a href={href} class="btn btn-primary w-full sm:w-auto">ขอใบเสนอราคา <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      </div>
+    </div>
+
+    <ul class="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
+      {
+        channels.map((c) => (
+          <li data-reveal>
+            <a
+              href={c.href}
+              {...(c.external ? { target: '_blank', rel: 'noopener' } : {})}
+              class="cut-corner group flex items-center gap-5 border border-white/10 bg-ink-2 p-5 transition hover:border-fix-400 hover:bg-fix-400 sm:p-6"
+            >
+              <span class="grid size-12 shrink-0 place-items-center bg-fix-400 text-ink transition group-hover:bg-ink group-hover:text-fix-400 sm:size-14">
+                <Icon name={c.icon} class="size-6 sm:size-7" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm text-white/50 transition group-hover:text-ink/70">{c.label}</span>
+                <span class="block truncate font-display text-lg font-semibold text-white transition group-hover:text-ink sm:text-xl">{c.value}</span>
+              </span>
+              <Icon name="mdi:arrow-top-right" class="ml-auto size-6 shrink-0 text-white/30 transition group-hover:text-ink" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

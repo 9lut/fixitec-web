@@ -1,0 +1,50 @@
+---
+/** จ้างพนักงาน IT ประจำ (BEFORE) vs FIXITEC (AFTER) — VS cards, made for dark sections */
+import { Icon } from 'astro-icon/components';
+import { inHouseCompare } from '../data/packages';
+---
+
+<div class="relative grid items-stretch gap-6 md:grid-cols-2 md:gap-0">
+  <div class="border border-white/10 bg-ink-2 p-6 sm:p-9 md:mr-[-1px]" data-reveal>
+    <p class="font-display text-sm tracking-[0.2em] text-white/40">BEFORE</p>
+    <h3 class="mt-2 font-display text-2xl font-semibold text-white/80">จ้างพนักงาน IT ประจำ</h3>
+    <ul class="mt-7 space-y-4">
+      {
+        inHouseCompare.map((r) => (
+          <li class="flex items-start gap-3 text-white/60">
+            <span class="mt-0.5 grid size-6 shrink-0 place-items-center bg-white/5 text-redx">
+              <Icon name="mdi:close-thick" class="size-4" />
+            </span>
+            <span><span class="font-medium text-white/80">{r.topic}:</span> {r.inHouse}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="cut-corner bg-fix-gradient relative p-6 text-ink shadow-[var(--shadow-yellow)] sm:p-9 md:-my-6 md:py-14" data-reveal>
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="font-display text-sm tracking-[0.2em] text-ink/60">AFTER</p>
+        <h3 class="mt-2 font-display text-2xl font-bold">ทีม FIXITEC IT Care</h3>
+      </div>
+      <span class="grid size-14 shrink-0 place-items-center">
+        <img src="/favicon-32.png" alt="" width="64" height="64" class="size-16" />
+      </span>
+    </div>
+    <ul class="mt-7 space-y-4">
+      {
+        inHouseCompare.map((r) => (
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 grid size-6 shrink-0 place-items-center bg-ink text-fix-400">
+              <Icon name="mdi:check-bold" class="size-4" />
+            </span>
+            <span><span class="font-semibold">{r.topic}:</span> {r.fixitec}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <span class="absolute top-1/2 left-1/2 hidden size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-4 border-ink bg-redx font-display font-bold text-white md:grid" aria-hidden="true">VS</span>
+</div>

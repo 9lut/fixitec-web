@@ -1,0 +1,50 @@
+---
+/** Inner-page header: cream + stripe texture + angled yellow block; breadcrumb, kicker, h1, lead; optional aside */
+import { Icon } from 'astro-icon/components';
+import type { Crumb } from '../lib/schema';
+
+interface Props {
+  crumbs: Crumb[];
+  kicker?: string;
+  title: string;
+  lead?: string;
+}
+
+const { crumbs, kicker, title, lead } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<section class="relative overflow-hidden bg-fix-50">
+  <div class="bg-stripes absolute inset-y-0 right-0 hidden w-1/2 lg:block" aria-hidden="true"></div>
+  {
+    !hasAside && (
+      <div class="bg-fix-gradient absolute top-0 -right-16 hidden h-full w-[22%] lg:block" style="clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%);" aria-hidden="true" />
+    )
+  }
+
+  <div class="wrap relative pt-6 pb-14 lg:pt-8 lg:pb-20">
+    <nav aria-label="breadcrumb">
+      <ol class="flex flex-wrap items-center gap-1.5 text-[13px] text-muted">
+        <li><a href="/" class="hover:text-ink">หน้าแรก</a></li>
+        {
+          crumbs.map((c, i) => (
+            <li class="flex items-center gap-1.5">
+              <Icon name="mdi:chevron-right" class="size-4 text-fix-600" />
+              {i === crumbs.length - 1 ? <span aria-current="page" class="font-medium text-ink">{c.name}</span> : <a href={c.href} class="hover:text-ink">{c.name}</a>}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class:list={['mt-8 grid gap-10 lg:mt-12', hasAside && 'lg:grid-cols-[1.35fr_1fr] lg:items-end lg:gap-14']}>
+      <div class="min-w-0" data-reveal>
+        {kicker && <p class="kicker">{kicker}</p>}
+        <h1 class:list={['h-display mt-4 max-w-3xl', hasAside && 'lg:text-[clamp(2rem,3.4vw,3rem)]']}>{title}</h1>
+        {lead && <p class="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-4 sm:text-lg">{lead}</p>}
+        <slot />
+      </div>
+      {hasAside && <div class="min-w-0" data-reveal><slot name="aside" /></div>}
+    </div>
+  </div>
+</section>

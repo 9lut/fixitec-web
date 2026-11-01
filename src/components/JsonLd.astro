@@ -1,0 +1,11 @@
+---
+/** Renders a <script type="application/ld+json"> tag for any Schema.org object. */
+interface Props {
+  schema: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { schema } = Astro.props;
+const json = JSON.stringify(schema).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json} />

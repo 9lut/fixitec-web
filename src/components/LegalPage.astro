@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from './PageHero.astro';
+
+interface Props {
+  title: string;
+  seoTitle: string;
+  description: string;
+  href: string;
+  updated: string;
+}
+
+const { title, seoTitle, description, href, updated } = Astro.props;
+const crumbs = [{ name: title, href }];
+---
+
+<Layout title={seoTitle} description={description} crumbs={crumbs}>
+  <PageHero crumbs={crumbs} title={title} lead={`ปรับปรุงล่าสุด ${updated}`} />
+  <section class="py-14 lg:py-20">
+    <div class="wrap">
+      <article class="prose-fix max-w-3xl">
+        <slot />
+      </article>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,77 @@
+---
+/**
+ * Hero visual: the FIXITEC X mark in the centre, systems orbiting on the outer ring and
+ * care-model services on the inner ring (counter-rotating). Pauses on hover; static with reduced motion.
+ */
+import { Icon } from 'astro-icon/components';
+import FxIcon from './FxIcon.astro';
+import { services, serviceHref } from '../data/services';
+
+const outer = services.filter((s) => s.group === 'systems');
+const inner = services.filter((s) => s.group === 'care');
+const angle = (i: number, n: number, offset = -90) => `${offset + (360 / n) * i}deg`;
+---
+
+<div class="relative mx-auto flex w-full flex-col items-center gap-5 py-6 sm:py-8">
+  <!-- glow -->
+  <div class="absolute top-1/2 left-1/2 size-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fix-400/35 blur-3xl" aria-hidden="true"></div>
+
+  <div class="orbit">
+    <!-- rings -->
+    <span class="absolute inset-[calc(50%-var(--r-outer))] rounded-full border-2 border-dashed border-ink/15" aria-hidden="true"></span>
+    <span class="absolute inset-[calc(50%-var(--r-inner))] rounded-full border border-ink/15" aria-hidden="true"></span>
+
+    <!-- centre -->
+    <div class="absolute top-1/2 left-1/2 grid size-[calc(var(--r-inner)*1.15)] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-ink shadow-[0_30px_60px_-20px_rgba(17,17,20,0.7)]">
+      <span class="absolute inset-0 animate-ping rounded-full bg-fix-400/20 [animation-duration:3s]" aria-hidden="true"></span>
+      <span class="absolute inset-2 rounded-full border border-fix-400/40" aria-hidden="true"></span>
+      <img src="/images/x-mark.webp" alt="FIXITEC" width="600" height="600" class="relative w-[55%]" fetchpriority="high" />
+    </div>
+
+    <!-- outer ring: systems -->
+    <ul class="orbit-ring" aria-label="ระบบที่เราดูแล">
+      {
+        outer.map((s, i) => (
+          <li class="orbit-item" style={`--a:${angle(i, outer.length)}`}>
+            <a href={serviceHref(s.slug)} class="group relative grid size-full place-items-center bg-white text-ink shadow-[0_14px_30px_-12px_rgba(17,17,20,0.45)] transition-colors hover:bg-ink hover:text-white" style="clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%, 0 14px);" title={s.title}>
+              <FxIcon name={s.icon} class="size-[62%]" />
+              <span class="sr-only">{s.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- inner ring: care model -->
+    <ul class="orbit-ring is-inner" aria-label="รูปแบบการดูแล">
+      {
+        inner.map((s, i) => (
+          <li class="orbit-item" style={`--a:${angle(i, inner.length, -54)}`}>
+            <a href={serviceHref(s.slug)} class="grid size-full place-items-center rounded-full bg-fix-gradient text-ink shadow-[0_10px_24px_-10px_rgba(17,17,20,0.5)] transition hover:scale-110" style="--fx-accent:#fff" title={s.title}>
+              <FxIcon name={s.icon} class="size-[60%]" />
+              <span class="sr-only">{s.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- status cards: in flow below the orbit, so the rotating icons never run into them -->
+  <div class="relative flex flex-wrap justify-center gap-2.5">
+  <div class="flex items-center gap-2.5 bg-white py-2.5 pr-4 pl-2.5 shadow-[var(--shadow-card)]">
+    <span class="grid size-8 place-items-center bg-emerald-500 text-white"><Icon name="mdi:check-bold" class="size-5" /></span>
+    <span class="leading-tight">
+      <span class="block font-display text-sm font-semibold">เคส #1024 แก้ไขแล้ว</span>
+      <span class="block text-xs text-muted">Wi-Fi ห้องประชุม · Remote</span>
+    </span>
+  </div>
+  <div class="flex items-center gap-2.5 bg-ink py-2.5 pr-4 pl-2.5 text-white shadow-[var(--shadow-card)]">
+    <span class="grid size-8 place-items-center bg-redx"><Icon name="mdi:wrench-outline" class="size-5" /></span>
+    <span class="leading-tight">
+      <span class="block font-display text-sm font-semibold">Remote + On-site</span>
+      <span class="block text-xs text-white/60">ดูแลครบ 10 ด้าน</span>
+    </span>
+  </div>
+  </div>
+</div>

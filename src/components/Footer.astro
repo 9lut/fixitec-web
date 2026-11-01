@@ -1,0 +1,58 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
+import { nav, contact, company, location, SITE_SLOGAN } from '../config/site';
+import { services, serviceHref } from '../data/services';
+
+const year = new Date().getFullYear();
+const heading = 'font-display text-sm font-semibold tracking-[0.2em] text-fix-400';
+---
+
+<footer class="bg-[#0a0a0c] text-white/60">
+  <div class="hazard" aria-hidden="true"></div>
+  <div class="wrap pt-14 pb-28 md:pb-10">
+    <div class="grid gap-10 border-b border-white/10 pb-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div class="sm:col-span-2 lg:col-span-1">
+        <Logo on="dark" class="h-14 w-auto" />
+        <p class="mt-4 max-w-sm text-sm leading-relaxed">IT Support Outsource ดูแลระบบ IT องค์กร ครบ จบ รายเดือน — {SITE_SLOGAN}</p>
+        <p class="mt-4 text-sm">
+          ให้บริการโดย <a href={company.url} target="_blank" rel="noopener" class="font-semibold text-white hover:text-fix-400">{company.th}</a>
+        </p>
+      </div>
+
+      <nav aria-label="บริการ">
+        <p class={heading}>SERVICES</p>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {services.slice(0, 5).map((s) => <li><a href={serviceHref(s.slug)} class="hover:text-white">{s.title}</a></li>)}
+          <li><a href="/services/" class="text-fix-400 hover:underline">บริการทั้งหมด →</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="เมนู">
+        <p class={heading}>MENU</p>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {nav.filter((n) => !n.services).map((n) => <li><a href={n.href} class="hover:text-white">{n.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div>
+        <p class={heading}>CONTACT</p>
+        <ul class="mt-4 space-y-3 text-sm">
+          <li><a href={contact.phone.href} class="flex items-center gap-2.5 hover:text-white"><Icon name="mdi:phone" class="size-4 text-fix-400" />{contact.phone.display}</a></li>
+          <li><a href={contact.line.href} target="_blank" rel="noopener" class="flex items-center gap-2.5 hover:text-white"><Icon name="simple-icons:line" class="size-4 text-fix-400" />LINE {contact.line.id}</a></li>
+          <li><a href={contact.email.href} class="flex items-center gap-2.5 break-all hover:text-white"><Icon name="mdi:email-outline" class="size-4 shrink-0 text-fix-400" />{contact.email.display}</a></li>
+          <li><a href={location.mapUrl} target="_blank" rel="noopener" class="flex items-start gap-2.5 hover:text-white"><Icon name="mdi:map-marker-outline" class="mt-0.5 size-4 shrink-0 text-fix-400" />{location.address}</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} FIXITEC by {company.brand} · {company.th} สงวนลิขสิทธิ์</p>
+      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+        <li><a href="/privacy/" class="hover:text-white">นโยบายความเป็นส่วนตัว</a></li>
+        <li><a href="/cookies/" class="hover:text-white">นโยบายคุกกี้</a></li>
+        <li><a href="/terms/" class="hover:text-white">ข้อตกลงการใช้งาน</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

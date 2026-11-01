@@ -1,0 +1,35 @@
+---
+/** Onboarding steps — slanted number tags on a dashed rail */
+import { onboarding } from '../data/process';
+
+interface Props {
+  showTime?: boolean;
+}
+
+const { showTime = false } = Astro.props;
+---
+
+<ol class="relative grid max-w-3xl gap-8 xl:max-w-none xl:grid-cols-5 xl:gap-4">
+  <span class="absolute top-7 right-[10%] left-[10%] hidden border-t-2 border-dashed border-fix-500 xl:block" aria-hidden="true"></span>
+  <span class="absolute top-2 bottom-2 left-8 border-l-2 border-dashed border-fix-500 xl:hidden" aria-hidden="true"></span>
+
+  {
+    onboarding.map((s, i) => (
+      <li class="relative flex gap-5 xl:flex-col xl:items-center xl:text-center" data-reveal>
+        <span
+          class:list={[
+            'skew-tag relative z-10 grid h-14 w-16 shrink-0 place-items-center font-display text-xl font-bold',
+            i === onboarding.length - 1 ? 'bg-ink text-fix-400' : 'bg-fix-gradient text-ink',
+          ]}
+        >
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <div class="pt-1 xl:pt-5">
+          <h3 class="font-display text-lg font-semibold text-ink">{s.title}</h3>
+          <p class="mt-1 text-[15px] leading-relaxed text-muted">{s.desc}</p>
+          {showTime && <p class="skew-tag mt-3 inline-block bg-fix-100 px-3 py-0.5 font-display text-[13px] font-medium text-fix-800">{s.time}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ol>

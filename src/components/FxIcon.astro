@@ -1,0 +1,29 @@
+---
+/**
+ * Inline duotone icon from src/icons/fx.ts.
+ * Stroke = currentColor (set with text-*), accent fill = --fx-accent (default brand yellow).
+ */
+import { fxIcons, type FxIconName } from '../icons/fx';
+
+interface Props {
+  name: FxIconName;
+  class?: string;
+  label?: string;
+}
+
+const { name, class: className = 'size-6', label } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 48 48"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2.6"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class:list={['fx-icon', className]}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  set:html={fxIcons[name]}
+/>

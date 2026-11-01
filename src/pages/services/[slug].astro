@@ -1,0 +1,154 @@
+---
+/** Service detail page — one per entry in data/services.ts */
+import { Icon } from 'astro-icon/components';
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import FaqList from '../../components/FaqList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import FxIcon from '../../components/FxIcon.astro';
+import TapeBand from '../../components/TapeBand.astro';
+import { contact } from '../../config/site';
+import { services, serviceGroups, serviceHref, serviceNumber, type Service } from '../../data/services';
+import { faqSchema, serviceSchema } from '../../lib/schema';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service: s } = Astro.props;
+const href = serviceHref(s.slug);
+const crumbs = [
+  { name: 'บริการ', href: '/services/' },
+  { name: s.title, href },
+];
+const related = services.filter((x) => x.group === s.group && x.slug !== s.slug).slice(0, 3);
+const schema = [serviceSchema(s), faqSchema(s.faqs, href)];
+---
+
+<Layout title={s.seoTitle} description={s.seoDesc} crumbs={crumbs} schema={schema}>
+  <PageHero crumbs={crumbs} kicker={`${serviceNumber(s)} · ${serviceGroups[s.group].label}`} title={s.heroTitle} lead={s.intro}>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a href={`/contact/?service=${s.slug}`} class="btn btn-dark">ขอใบเสนอราคา <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      <a href={contact.line.href} target="_blank" rel="noopener" class="btn btn-outline"><Icon name="simple-icons:line" class="size-5 text-[#06C755]" />ปรึกษาทาง LINE</a>
+    </div>
+
+    <div slot="aside" class="cut-corner bg-ink p-6 text-white shadow-[0_30px_60px_-30px_rgba(17,17,20,0.6)]">
+      <div class="flex items-center gap-4">
+        <span class="bg-fix-gradient grid size-16 shrink-0 place-items-center text-ink" style="--fx-accent:#fff">
+          <FxIcon name={s.icon} class="size-10" />
+        </span>
+        <div>
+          <p class="font-display text-xl font-semibold">{s.title}</p>
+          <p class="text-[15px] text-fix-300">{s.short}</p>
+        </div>
+      </div>
+      <p class="mt-5 border-t border-white/10 pt-5 text-[15px] leading-relaxed text-white/80">{s.summary}</p>
+      <ul class="mt-5 grid grid-cols-2 gap-2 text-[13px]">
+        {s.covers.slice(0, 4).map((c) => <li class="bg-white/5 px-3 py-2 text-white/75">{c}</li>)}
+      </ul>
+      <p class="mt-5 flex items-center gap-2 text-[15px] text-white/60">
+        <Icon name="mdi:package-variant-closed" class="size-5 text-fix-400" />รวมอยู่ในแพ็กเกจดูแลรายเดือน
+      </p>
+    </div>
+  </PageHero>
+
+  <TapeBand />
+
+  <!-- covers + problems -->
+  <section class="bg-white pt-20 pb-20 lg:pt-28 lg:pb-32">
+    <div class="wrap grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <SectionHead kicker="ขอบเขต" title="สิ่งที่เราดูแล" />
+        <ul class="mt-8 divide-y divide-line border-y border-line">
+          {
+            s.covers.map((c) => (
+              <li class="flex items-start gap-3 py-3.5" data-reveal>
+                <span class="mt-0.5 grid size-6 shrink-0 place-items-center bg-fix-400">
+                  <Icon name="mdi:check-bold" class="size-4" />
+                </span>
+                <span>{c}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <SectionHead kicker="อาการที่พบบ่อย" title="ปัญหาที่เราแก้ได้" />
+        <ul class="mt-8 space-y-3">
+          {
+            s.problems.map((p) => (
+              <li class="cut-corner flex items-start gap-3 bg-fix-50 p-4 pl-5" data-reveal>
+                <Icon name="mdi:alert-circle-outline" class="mt-0.5 size-5 shrink-0 text-redx" />
+                <span>{p}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- how we care -->
+  <section class="slant bg-dots-dark overflow-hidden bg-ink text-white">
+    <img src="/images/x-mark.webp" alt="" aria-hidden="true" width="600" height="600" loading="lazy" class="pointer-events-none absolute -top-20 -right-24 w-[26rem] opacity-[0.07]" />
+    <div class="wrap relative">
+      <SectionHead kicker="วิธีดูแล" title="FIXITEC ดูแลอย่างไร" dark />
+      <ol class="swipe-row mt-8 md:grid-cols-3 lg:mt-10">
+        {
+          s.howWeCare.map((h, i) => (
+            <li class="cut-corner border-t-[3px] border-fix-400 bg-ink-2 p-6" data-reveal>
+              <span class="skew-tag inline-block bg-fix-gradient px-3 py-0.5 font-display text-sm font-bold text-ink">0{i + 1}</span>
+              <h3 class="mt-2 font-display text-xl font-semibold">{h.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-white/70">{h.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- deliverables -->
+  <section class="bg-white pt-20 pb-14 lg:pt-32 lg:pb-20">
+    <div class="wrap grid grid-cols-1 gap-8 xl:grid-cols-[1fr_2fr] xl:items-start [&>*]:min-w-0">
+      <SectionHead kicker="สิ่งที่ส่งมอบ" title="สิ่งที่คุณจะได้รับ" />
+      <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {
+          s.deliverables.map((d) => (
+            <li class="cut-corner flex items-center gap-3 bg-white p-4 shadow-[var(--shadow-card)]">
+              <Icon name="mdi:file-document-check-outline" class="size-6 shrink-0" />
+              <span class="font-medium">{d}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="border-t border-line bg-paper py-14 lg:py-20">
+    <div class="wrap grid grid-cols-1 gap-8 xl:grid-cols-[1fr_2fr] [&>*]:min-w-0">
+      <SectionHead kicker="FAQ" title="คำถามที่พบบ่อย" />
+      <FaqList items={s.faqs} openFirst />
+    </div>
+  </section>
+
+  <!-- related -->
+  <section class="py-14 lg:py-20">
+    <div class="wrap">
+      <SectionHead kicker="บริการที่เกี่ยวข้อง" title="ดูแลร่วมกันได้ในสัญญาเดียว">
+        <a href="/services/" class="btn btn-outline !min-h-11">บริการทั้งหมด</a>
+      </SectionHead>
+      <div class="swipe-row mt-8 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((r) => <ServiceCard service={r} detailed />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={`สนใจบริการ ${s.title}?`} service={s.slug} />
+</Layout>

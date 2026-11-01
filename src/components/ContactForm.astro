@@ -1,0 +1,102 @@
+---
+/**
+ * Quote request form. No backend yet: validates, then opens an email to the team (same approach as sucasoft).
+ * Preselects ?service=<slug> and ?topic=audit from the URL.
+ * TODO: ส่งเข้า API (เช่น Cloudflare Worker / Web3Forms) เมื่อพร้อม
+ */
+import { Icon } from 'astro-icon/components';
+import { contact } from '../config/site';
+import { services } from '../data/services';
+
+const label = 'mb-1.5 block text-[15px] font-medium';
+const deviceRanges = ['ไม่เกิน 10 เครื่อง', '11 – 30 เครื่อง', '31 – 60 เครื่อง', 'มากกว่า 60 เครื่อง', 'ยังไม่แน่ใจ'];
+---
+
+<form id="quote-form" class="border border-line bg-white p-5 sm:p-8" data-email={contact.email.display} novalidate>
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label for="qf-name" class={label}>ชื่อผู้ติดต่อ <span class="text-redx">*</span></label>
+      <input id="qf-name" name="name" type="text" autocomplete="name" required class="field" />
+    </div>
+    <div>
+      <label for="qf-company" class={label}>ชื่อบริษัท / องค์กร</label>
+      <input id="qf-company" name="company" type="text" autocomplete="organization" class="field" />
+    </div>
+    <div>
+      <label for="qf-phone" class={label}>เบอร์โทร <span class="text-redx">*</span></label>
+      <input id="qf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required class="field" />
+    </div>
+    <div>
+      <label for="qf-email" class={label}>อีเมล</label>
+      <input id="qf-email" name="email" type="email" autocomplete="email" class="field" />
+    </div>
+    <div>
+      <label for="qf-devices" class={label}>จำนวนคอมพิวเตอร์โดยประมาณ</label>
+      <select id="qf-devices" name="devices" class="field">
+        <option value="">เลือก</option>
+        {deviceRanges.map((d) => <option value={d}>{d}</option>)}
+      </select>
+    </div>
+    <div>
+      <label for="qf-service" class={label}>สนใจบริการ</label>
+      <select id="qf-service" name="service" class="field">
+        <option value="">ดูแลทั้งระบบ (IT Outsource)</option>
+        <option value="audit">สำรวจระบบ IT Audit ฟรี</option>
+        {services.map((s) => <option value={s.slug}>{s.title}</option>)}
+      </select>
+    </div>
+    <div class="sm:col-span-2">
+      <label for="qf-message" class={label}>เล่าปัญหาหรือความต้องการ</label>
+      <textarea id="qf-message" name="message" rows="4" class="field" placeholder="เช่น เน็ตหลุดบ่อย ต้องการคนดูแลคอมพิวเตอร์ 20 เครื่อง"></textarea>
+    </div>
+    <label class="flex items-start gap-3 text-[15px] text-ink/75 sm:col-span-2">
+      <input type="checkbox" name="consent" required class="mt-1 size-5 shrink-0 accent-ink" />
+      <span>ยินยอมให้ติดต่อกลับตาม <a href="/privacy/" class="underline underline-offset-4">นโยบายความเป็นส่วนตัว</a></span>
+    </label>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-7 w-full sm:w-auto">
+    ส่งคำขอใบเสนอราคา <Icon name="mdi:arrow-right" class="arrow size-5" />
+  </button>
+  <p data-status class="mt-4 hidden bg-brand-soft p-4 text-[15px]" role="status">
+    กำลังเปิดแอปอีเมลพร้อมข้อความของคุณ หากไม่เปิด โทร {contact.phone.display} หรือแอด LINE {contact.line.id} ได้เลย
+  </p>
+</form>
+
+<script>
+  const form = document.getElementById('quote-form') as HTMLFormElement | null;
+  const select = document.getElementById('qf-service') as HTMLSelectElement | null;
+
+  const params = new URLSearchParams(location.search);
+  const pre = params.get('service') ?? (params.get('topic') === 'audit' ? 'audit' : null);
+  if (pre && select && [...select.options].some((o) => o.value === pre)) select.value = pre;
+
+  // ?package=<id> from the packages page
+  const pkg = params.get('package');
+  const message = document.getElementById('qf-message') as HTMLTextAreaElement | null;
+  if (pkg && message && !message.value) message.value = `สนใจแพ็กเกจ ${pkg.charAt(0).toUpperCase()}${pkg.slice(1)} Care`;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const d = new FormData(form);
+    const get = (k: string) => String(d.get(k) ?? '').trim();
+    const serviceLabel = select?.selectedOptions[0]?.text ?? '';
+    const subject = `[FIXITEC] ขอใบเสนอราคา — ${get('company') || get('name')}`;
+    const body = [
+      `ชื่อ: ${get('name')}`,
+      `บริษัท: ${get('company')}`,
+      `โทร: ${get('phone')}`,
+      `อีเมล: ${get('email')}`,
+      `จำนวนเครื่อง: ${get('devices')}`,
+      `บริการ: ${serviceLabel}`,
+      '',
+      get('message'),
+    ].join('\n');
+    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    form.querySelector<HTMLElement>('[data-status]')?.classList.remove('hidden');
+  });
+</script>

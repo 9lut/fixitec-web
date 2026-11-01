@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fixitec.sucasoft.com/sitemap-index.xml

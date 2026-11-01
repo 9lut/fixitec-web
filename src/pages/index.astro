@@ -1,0 +1,316 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '../layouts/Layout.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import CompareTable from '../components/CompareTable.astro';
+import StepList from '../components/StepList.astro';
+import PromoBand from '../components/PromoBand.astro';
+import MapEmbed from '../components/MapEmbed.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import HeroOrbit from '../components/HeroOrbit.astro';
+import TapeBand from '../components/TapeBand.astro';
+import FxIcon from '../components/FxIcon.astro';
+import BrandVisual from '../components/BrandVisual.astro';
+import Clients from '../components/Clients.astro';
+import { pageSeo } from '../config/seo';
+import { contact, location } from '../config/site';
+import { hero, pains, why, about } from '../data/home';
+import { services, serviceGroups, serviceHref, getService, type ServiceGroup } from '../data/services';
+import { packages } from '../data/packages';
+import { featuredFaqs } from '../data/faq';
+import { faqSchema, serviceCatalogSchema } from '../lib/schema';
+
+const seo = pageSeo.home;
+const groups = Object.keys(serviceGroups) as ServiceGroup[];
+const schema = [serviceCatalogSchema('บริการดูแลระบบ IT องค์กร FIXITEC', services), faqSchema(featuredFaqs, '/')];
+const portal = getService('it-care-portal')!;
+
+// sample data for the IT Care Portal mock (illustrative only)
+const tickets = [
+  { title: 'Wi-Fi ห้องประชุมหลุดบ่อย', via: 'Remote', status: 'แก้ไขแล้ว', tone: 'bg-emerald-400/15 text-emerald-300' },
+  { title: 'ติดตั้ง Printer ฝ่ายบัญชี', via: 'On-site', status: 'กำลังดำเนินการ', tone: 'bg-fix-400/15 text-fix-300' },
+  { title: 'อัปเดต Security Patch ทั้งออฟฟิศ', via: 'ตามแผน', status: 'นัดหมายแล้ว', tone: 'bg-white/10 text-white/70' },
+];
+---
+
+<Layout title={seo.title} description={seo.description} schema={schema}>
+  <!-- ── Hero ── -->
+  <section aria-labelledby="hero-title" class="relative overflow-hidden bg-fix-50">
+    <div class="bg-stripes absolute inset-y-0 right-0 hidden w-1/2 lg:block" aria-hidden="true"></div>
+    <div class="bg-fix-gradient absolute top-0 -right-24 hidden h-full w-[34%] lg:block" style="clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);" aria-hidden="true"></div>
+
+    <div class="wrap relative grid grid-cols-1 items-center gap-4 pt-8 pb-16 sm:pt-12 lg:grid-cols-[1.05fr_1fr] lg:gap-6 lg:pt-14 lg:pb-24 [&>*]:min-w-0">
+      <div>
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2" data-reveal>
+          <span class="skew-tag bg-ink px-4 py-1.5 font-display text-xs font-semibold tracking-[0.16em] text-fix-400 sm:px-5 sm:text-sm">{hero.badge}</span>
+          <span class="font-display text-xs font-medium tracking-[0.18em] text-muted sm:text-sm">{hero.kicker}</span>
+        </div>
+
+        <h1 id="hero-title" class="h-display mt-5 sm:mt-6 lg:text-[clamp(2.6rem,4.6vw,4rem)]" data-reveal>
+          <span class="block">{hero.titleLine1}</span>
+          <span class="mt-1 block"><span class="mark-yellow">{hero.titleLine2}</span></span>
+        </h1>
+
+        <p class="mt-5 max-w-xl text-base leading-relaxed text-ink-4 sm:mt-6 sm:text-lg" data-reveal>{hero.desc}</p>
+
+        <div class="mt-7 grid grid-cols-2 gap-2.5 sm:flex sm:gap-3" data-reveal>
+          <a href="/contact/" class="btn btn-dark !px-3 sm:!px-8 sm:text-lg">
+            <Icon name="mdi:message-processing-outline" class="size-5 sm:size-6" />ปรึกษาฟรี<Icon name="mdi:arrow-right" class="arrow hidden size-5 sm:block" />
+          </a>
+          <a href={contact.line.href} target="_blank" rel="noopener" class="btn btn-outline !px-3 sm:!px-7 sm:text-lg">
+            <Icon name="simple-icons:line" class="size-5 text-[#06C755]" />แอด LINE
+          </a>
+        </div>
+
+        <ul class="mt-6 flex flex-wrap gap-2 sm:mt-8 sm:gap-x-6" data-reveal>
+          {
+            hero.points.map((p) => (
+              <li class="inline-flex items-center gap-2 bg-white/70 py-1 pr-3 pl-1 text-sm font-medium text-ink-3 sm:bg-transparent sm:p-0 sm:text-[15px]">
+                <span class="grid size-5 place-items-center bg-fix-400"><Icon name="mdi:check-bold" class="size-3.5" /></span>
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div data-reveal><HeroOrbit /></div>
+    </div>
+  </section>
+
+  <TapeBand />
+
+  <!-- ── Pains ── -->
+  <section class="bg-white pt-20 pb-14 lg:pt-28 lg:pb-24">
+    <div class="wrap grid grid-cols-1 gap-8 lg:gap-10 xl:grid-cols-[0.9fr_1.6fr] xl:gap-16 [&>*]:min-w-0">
+      <div>
+        <SectionHead kicker={pains.kicker} title={pains.title} />
+        <a href="/packages/" class="mt-6 inline-flex items-center gap-2 font-display font-semibold underline decoration-fix-400 decoration-[3px] underline-offset-8 hover:decoration-fix-600 lg:mt-8">
+          ดูแพ็กเกจที่คุ้มกว่า <Icon name="mdi:arrow-right" class="size-5" />
+        </a>
+      </div>
+      <ol class="swipe-row sm:grid-cols-3">
+        {
+          pains.items.map((p, i) => (
+            <li class="cut-corner group relative bg-fix-50 p-6 pt-7 transition-colors hover:bg-ink" data-reveal>
+              <span class="font-display text-5xl font-bold text-transparent [-webkit-text-stroke:1.5px_#e39400] transition group-hover:[-webkit-text-stroke:1.5px_#ffd200]">0{i + 1}</span>
+              <Icon name={p.icon} class="absolute top-6 right-6 size-8 text-redx" />
+              <h3 class="mt-5 font-display text-xl font-semibold transition-colors group-hover:text-white">{p.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-ink-4 transition-colors group-hover:text-white/70">{p.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="-mt-4 flex items-center gap-1.5 text-[13px] text-muted sm:hidden"><Icon name="mdi:gesture-swipe-horizontal" class="size-4" />เลื่อนดูเพิ่ม</p>
+    </div>
+  </section>
+
+  <!-- ── Services ── -->
+  <section class="bg-fix-50 pt-14 pb-20 lg:pt-24 lg:pb-32">
+    <div class="wrap">
+      <SectionHead kicker="บริการของเรา" title="ดูแลครบ 10 ด้าน ในสัญญาเดียว">
+        <a href="/services/" class="btn btn-outline hidden sm:inline-flex">บริการทั้งหมด <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      </SectionHead>
+      {
+        groups.map((g) => (
+          <div class="mt-10 lg:mt-12">
+            <div class="mb-4 flex flex-wrap items-center gap-3 sm:mb-5">
+              <span class="skew-tag bg-ink px-4 py-1 font-display text-xs font-semibold tracking-[0.12em] text-fix-400">{serviceGroups[g].label}</span>
+              <h3 class="font-display text-lg font-semibold">{serviceGroups[g].title}</h3>
+            </div>
+            <div class="swipe-row sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {services.filter((s) => s.group === g).map((s) => <ServiceCard service={s} class="!basis-[62%]" />)}
+            </div>
+          </div>
+        ))
+      }
+      <a href="/services/" class="btn btn-outline mt-6 w-full sm:hidden">บริการทั้งหมด <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+    </div>
+  </section>
+
+  <!-- ── Compare (slanted dark) ── -->
+  <section class="slant bg-dots-dark bg-ink">
+    <div class="wrap max-w-6xl">
+      <SectionHead kicker="เปรียบเทียบ" title="จ้าง IT ประจำ vs ทีม FIXITEC" dark center />
+      <div class="mt-10 lg:mt-14"><CompareTable /></div>
+    </div>
+  </section>
+
+  <!-- ── Process ── -->
+  <section class="bg-white pt-20 pb-20 lg:pt-32 lg:pb-32">
+    <div class="wrap">
+      <SectionHead kicker="เริ่มต้นง่าย" title="จากปรึกษา สู่การดูแลทุกเดือน">
+        <a href="/how-it-works/" class="inline-flex items-center gap-2 font-display font-semibold underline decoration-fix-400 decoration-[3px] underline-offset-8">
+          ขั้นตอนการทำงาน <Icon name="mdi:arrow-right" class="size-5" />
+        </a>
+      </SectionHead>
+      <div class="mt-10 lg:mt-14"><StepList /></div>
+    </div>
+  </section>
+
+  <!-- ── IT Care Portal (slanted dark) ── -->
+  <section class="slant relative overflow-hidden bg-ink text-white">
+    <img src="/images/x-mark.webp" alt="" aria-hidden="true" width="600" height="600" loading="lazy" class="pointer-events-none absolute -top-10 -left-32 w-[28rem] opacity-[0.06]" />
+    <div class="wrap relative grid grid-cols-1 items-center gap-12 xl:grid-cols-[1fr_1.1fr] xl:gap-16 [&>*]:min-w-0">
+      <div>
+        <SectionHead kicker="IT Care Portal" title="เห็นทุกงาน IT แบบเรียลไทม์" lead={portal.summary} dark />
+        <ul class="mt-8 grid grid-cols-2 gap-2.5">
+          {
+            portal.covers.map((c) => (
+              <li class="flex items-start gap-2 bg-white/5 px-3 py-2.5 text-sm text-white/85" data-reveal>
+                <Icon name="mdi:check-bold" class="mt-0.5 size-4 shrink-0 text-fix-400" />{c}
+              </li>
+            ))
+          }
+        </ul>
+        <a href={serviceHref(portal.slug)} class="btn btn-primary mt-8">รู้จัก IT Care Portal <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      </div>
+
+      <div class="relative mx-auto w-full max-w-2xl xl:max-w-none" data-reveal>
+        <div class="cut-corner relative border border-white/10 bg-ink-2 p-5 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] sm:p-7">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="grid size-10 place-items-center bg-fix-400 text-ink"><FxIcon name="it-care-portal" class="size-7" /></span>
+              <div>
+                <p class="font-display text-[15px] font-semibold leading-tight">IT Care Portal</p>
+                <p class="text-xs text-white/50">ตัวอย่างหน้าจอติดตามงาน</p>
+              </div>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1.5 text-xs text-emerald-300"><span class="size-2 animate-pulse rounded-full bg-emerald-400"></span>ระบบปกติ</span>
+          </div>
+          <dl class="mt-6 grid grid-cols-3 gap-2.5">
+            <div class="bg-white/5 p-3"><dt class="text-[11px] text-white/50">อุปกรณ์ที่ดูแล</dt><dd class="mt-1 font-display text-2xl font-semibold text-fix-400">48</dd></div>
+            <div class="bg-white/5 p-3"><dt class="text-[11px] text-white/50">เคสเดือนนี้</dt><dd class="mt-1 font-display text-2xl font-semibold">12</dd></div>
+            <div class="bg-white/5 p-3"><dt class="text-[11px] text-white/50">ปิดเคสแล้ว</dt><dd class="mt-1 font-display text-2xl font-semibold">11</dd></div>
+          </dl>
+          <ul class="mt-5 space-y-2">
+            {
+              tickets.map((t, i) => (
+                <li class="flex items-center gap-3 border-l-[3px] border-fix-400 bg-white/[0.04] px-3.5 py-3">
+                  <span class="hidden font-display text-xs text-white/40 sm:inline">#10{24 + i}</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium">{t.title}</p>
+                    <p class="text-xs text-white/45">{t.via}</p>
+                  </div>
+                  <span class={`shrink-0 px-2 py-1 text-[11px] font-medium ${t.tone}`}>{t.status}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-5 flex items-center justify-between border-t border-white/10 pt-4 text-xs text-white/50">
+            <span>รายงานประจำเดือนพร้อมดาวน์โหลด</span>
+            <FxIcon name="monthly-report" class="size-6 text-white" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Packages teaser ── -->
+  <section class="bg-stripes bg-fix-50 pt-20 pb-14 lg:pt-32 lg:pb-24">
+    <div class="wrap">
+      <SectionHead kicker="แพ็กเกจรายเดือน" title="เลือกตามขนาดองค์กร" center />
+      <div class="swipe-row mt-10 md:grid-cols-3 lg:mt-12">
+        {
+          packages.map((p) => (
+            <a
+              href="/packages/"
+              class:list={[
+                'cut-corner group relative flex flex-col p-6 transition sm:p-7',
+                p.featured ? 'bg-ink text-white shadow-[0_30px_60px_-30px_rgba(17,17,20,0.7)]' : 'bg-white shadow-[var(--shadow-card)] hover:bg-ink hover:text-white',
+              ]}
+              data-reveal
+            >
+              {p.featured && <span class="skew-tag absolute top-0 right-6 bg-redx px-4 py-1.5 font-display text-xs font-semibold tracking-[0.15em] text-white">แนะนำ</span>}
+              <h3 class:list={['font-display text-2xl font-bold', p.featured ? 'text-fix-400' : 'group-hover:text-fix-400']}>{p.name}</h3>
+              <p class="mt-1 text-[15px] opacity-70">{p.tagline}</p>
+              <p class="mt-5 flex items-center gap-2 font-display font-medium"><Icon name="mdi:monitor-multiple" class="size-5 text-fix-500" />{p.devices}</p>
+              <ul class="mt-4 space-y-1.5 text-sm opacity-80">
+                {p.highlights.slice(0, 3).map((h) => <li class="flex gap-2"><Icon name="mdi:check" class="mt-0.5 size-4 shrink-0 text-fix-500" />{h}</li>)}
+              </ul>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 font-display text-sm font-semibold text-fix-600 group-hover:text-fix-400">
+                ดูรายละเอียด <Icon name="mdi:arrow-right" class="arrow size-4" />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <PromoBand />
+
+  <!-- ── Why ── -->
+  <section class="overflow-hidden bg-white py-14 lg:py-24">
+    <div class="wrap grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20 [&>*]:min-w-0">
+      <BrandVisual />
+      <div>
+        <SectionHead kicker="ทำไมต้อง FIXITEC" title="We Care Beyond Tech" lead={about.lead} />
+        <ul class="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-8 lg:mt-10">
+          {
+            why.map((w) => (
+              <li class="flex flex-col gap-3 sm:flex-row sm:gap-4" data-reveal>
+                <span class="grid size-12 shrink-0 place-items-center bg-fix-100"><Icon name={w.icon} class="size-6" /></span>
+                <div>
+                  <h3 class="font-display text-base font-semibold sm:text-lg">{w.title}</h3>
+                  <p class="mt-1 text-sm leading-relaxed text-muted sm:text-[15px]">{w.desc}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/about/" class="btn btn-outline mt-8 w-full sm:w-auto lg:mt-10">เกี่ยวกับเรา <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Clients ── -->
+  <Clients />
+
+  <!-- ── Area + map ── -->
+  <section class="bg-white py-14 lg:py-24">
+    <div class="wrap grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-center lg:gap-14 [&>*]:min-w-0">
+      <div>
+        <SectionHead kicker="พื้นที่ให้บริการ" title="ดูแลถึงที่ ทั่วหาดใหญ่" />
+        <ul class="mt-8 space-y-3">
+          <li class="cut-corner flex gap-4 bg-white p-4 shadow-[var(--shadow-card)] sm:p-5" data-reveal>
+            <span class="grid size-12 shrink-0 place-items-center bg-fix-50"><FxIcon name="onsite-service" class="size-8" /></span>
+            <div><p class="font-display font-semibold">On-site ถึงหน้างาน</p><p class="text-[15px] text-muted">{location.onsiteArea.join(' · ')}</p></div>
+          </li>
+          <li class="cut-corner flex gap-4 bg-white p-4 shadow-[var(--shadow-card)] sm:p-5" data-reveal>
+            <span class="grid size-12 shrink-0 place-items-center bg-fix-50"><FxIcon name="remote-support" class="size-8" /></span>
+            <div><p class="font-display font-semibold">Remote Support</p><p class="text-[15px] text-muted">ให้บริการ{location.remoteArea}</p></div>
+          </li>
+          <li class="cut-corner flex gap-4 bg-white p-4 shadow-[var(--shadow-card)] sm:p-5" data-reveal>
+            <span class="grid size-12 shrink-0 place-items-center bg-fix-50"><Icon name="mdi:clock-outline" class="size-7" /></span>
+            <div><p class="font-display font-semibold">เวลาทำการ</p>{contact.hours.map((h) => <p class="text-[15px] text-muted">{h.days} {h.time}</p>)}</div>
+          </li>
+        </ul>
+      </div>
+      <div data-reveal><MapEmbed /></div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section class="bg-fix-50 pt-14 pb-20 lg:pt-24 lg:pb-28">
+    <div class="wrap grid grid-cols-1 gap-8 lg:grid-cols-[0.8fr_1.4fr] lg:gap-16 [&>*]:min-w-0">
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <SectionHead kicker="FAQ" title="คำถามที่พบบ่อย" />
+        <div class="cut-corner mt-8 hidden bg-ink p-6 text-white lg:block" data-reveal>
+          <p class="font-display text-lg font-semibold">ยังมีคำถามอื่นอีกไหม?</p>
+          <p class="mt-1 text-sm text-white/60">ทีมงานพร้อมตอบทุกข้อสงสัย</p>
+          <a href={contact.phone.href} class="mt-4 inline-flex items-center gap-2 font-display text-xl font-semibold text-fix-400 hover:text-fix-300"><Icon name="mdi:phone" class="size-5" />{contact.phone.display}</a>
+          <a href="/faq/" class="mt-4 flex items-center gap-1.5 border-t border-white/10 pt-4 text-sm text-white/70 hover:text-white">ดูคำถามทั้งหมด <Icon name="mdi:arrow-right" class="size-4" /></a>
+        </div>
+      </div>
+      <div>
+        <FaqList items={featuredFaqs} openFirst />
+        <a href="/faq/" class="btn btn-outline mt-6 w-full lg:hidden">ดูคำถามทั้งหมด</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

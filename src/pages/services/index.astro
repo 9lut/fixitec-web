@@ -1,0 +1,65 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/ui/SectionHead.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import TapeBand from '../../components/TapeBand.astro';
+import { pageSeo } from '../../config/seo';
+import { services, serviceGroups, type ServiceGroup } from '../../data/services';
+import { serviceCatalogSchema } from '../../lib/schema';
+
+const seo = pageSeo.services;
+const groups = Object.keys(serviceGroups) as ServiceGroup[];
+const crumbs = [{ name: 'บริการ', href: '/services/' }];
+
+const included = [
+  'ทะเบียนอุปกรณ์ทั้งองค์กร',
+  'บันทึกทุกเคสพร้อมวิธีแก้',
+  'รายงานสรุปรายเดือน',
+  'ส่งมอบรหัสผ่านและเอกสารให้องค์กร',
+];
+---
+
+<Layout title={seo.title} description={seo.description} crumbs={crumbs} pageType="CollectionPage" schema={[serviceCatalogSchema('บริการดูแลระบบ IT องค์กร FIXITEC', services)]}>
+  <PageHero
+    crumbs={crumbs}
+    kicker="บริการ"
+    title="บริการดูแลระบบ IT องค์กร"
+    lead="ดูแลครบทั้งอุปกรณ์และระบบ ด้วยรูปแบบการดูแลที่วัดผลได้ ทั้งหมดอยู่ในสัญญารายเดือนเดียว"
+  />
+
+  <TapeBand />
+
+  {
+    groups.map((g, i) => (
+      <section class:list={i % 2 === 1 ? 'slant bg-dots-dark bg-ink' : 'bg-white pt-20 pb-20 lg:pt-28 lg:pb-32'}>
+        <div class="wrap">
+          <SectionHead kicker={serviceGroups[g].label} title={serviceGroups[g].title} lead={serviceGroups[g].desc} dark={i % 2 === 1} />
+          <div class="swipe-row mt-8 sm:grid-cols-2 lg:mt-10 lg:grid-cols-3">
+            {services.filter((s) => s.group === g).map((s) => <ServiceCard service={s} detailed />)}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="bg-fix-50 pt-20 pb-14 lg:pt-32 lg:pb-24">
+    <div class="wrap grid grid-cols-1 gap-8 xl:grid-cols-[1fr_2fr] xl:items-center [&>*]:min-w-0">
+      <SectionHead kicker="มาตรฐานเดียวกัน" title="ทุกแพ็กเกจได้รับ" />
+      <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {
+          included.map((item) => (
+            <li class="cut-corner flex items-center gap-3 bg-white p-4 shadow-[var(--shadow-card)]">
+              <Icon name="mdi:check-circle" class="size-6 shrink-0" />
+              <span class="font-medium">{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

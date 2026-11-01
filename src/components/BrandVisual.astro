@@ -1,0 +1,73 @@
+---
+/**
+ * Vector brand visual: a sample "monthly IT report" card — shows what clients actually receive.
+ * Used on home "Why" and About. All numbers are illustrative (labelled ตัวอย่าง).
+ */
+import { Icon } from 'astro-icon/components';
+import FxIcon from './FxIcon.astro';
+import Logo from './Logo.astro';
+import type { FxIconName } from '../icons/fx';
+
+const checks: { icon: FxIconName; label: string; status: string; ok: boolean }[] = [
+  { icon: 'server', label: 'Backup ข้อมูล', status: 'สำเร็จทุกวัน', ok: true },
+  { icon: 'it-security', label: 'Antivirus / Patch', status: 'อัปเดตครบ', ok: true },
+  { icon: 'cctv', label: 'กล้องวงจรปิด', status: 'บันทึกครบ 16 ตัว', ok: true },
+  { icon: 'computer', label: 'คอมพิวเตอร์', status: 'SSD ใกล้เต็ม 2 เครื่อง', ok: false },
+];
+---
+
+<div class="relative mx-auto w-full max-w-md pt-6 pr-3 pb-3 sm:pr-6" data-reveal>
+  <!-- yellow block behind -->
+  <div class="bg-fix-gradient absolute top-0 right-0 bottom-12 left-10 sm:left-16" style="clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);" aria-hidden="true"></div>
+
+  <article class="cut-corner relative bg-white p-5 shadow-[0_30px_60px_-24px_rgba(17,17,20,0.45)] sm:p-6 lg:-rotate-2">
+    <!-- header -->
+    <header class="flex items-center justify-between gap-3 border-b border-line pb-4">
+      <Logo class="h-7 w-auto sm:h-8" />
+      <div class="text-right leading-tight">
+        <p class="font-display text-sm font-semibold">รายงาน IT ประจำเดือน</p>
+        <p class="text-xs text-muted">ตัวอย่าง</p>
+      </div>
+    </header>
+
+    <!-- health score -->
+    <div class="mt-5 flex items-end justify-between gap-4">
+      <div>
+        <p class="text-[13px] text-muted">ความพร้อมใช้งานระบบ</p>
+        <p class="font-display text-4xl leading-none font-bold sm:text-5xl">98<span class="text-2xl">%</span></p>
+      </div>
+      <dl class="grid grid-cols-3 gap-1.5 text-center">
+        <div class="bg-fix-50 px-2.5 py-1.5"><dt class="text-[11px] text-muted">เคส</dt><dd class="font-display text-lg font-semibold">12</dd></div>
+        <div class="bg-fix-50 px-2.5 py-1.5"><dt class="text-[11px] text-muted">Remote</dt><dd class="font-display text-lg font-semibold">9</dd></div>
+        <div class="bg-fix-50 px-2.5 py-1.5"><dt class="text-[11px] text-muted">On-site</dt><dd class="font-display text-lg font-semibold">3</dd></div>
+      </dl>
+    </div>
+    <div class="mt-3 h-2 bg-fix-50" aria-hidden="true"><div class="bg-fix-gradient h-full w-[98%]"></div></div>
+
+    <!-- checklist -->
+    <ul class="mt-5 divide-y divide-line">
+      {
+        checks.map((c) => (
+          <li class="flex items-center gap-3 py-2.5">
+            <span class="grid size-9 shrink-0 place-items-center bg-fix-50">
+              <FxIcon name={c.icon} class="size-6" />
+            </span>
+            <span class="min-w-0 flex-1 text-[15px] font-medium">{c.label}</span>
+            <span class:list={['flex shrink-0 items-center gap-1 px-2 py-0.5 text-xs font-medium', c.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-fix-100 text-fix-800']}>
+              <Icon name={c.ok ? 'mdi:check-bold' : 'mdi:alert'} class="size-3.5" />
+              {c.status}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- recommendation -->
+    <footer class="mt-4 flex items-start gap-3 bg-ink p-3.5 text-white">
+      <FxIcon name="monthly-report" class="size-7 shrink-0" />
+      <p class="text-[13px] leading-relaxed text-white/80">
+        <span class="font-semibold text-fix-400">ข้อเสนอแนะ:</span> อัปเกรด SSD 2 เครื่องในไตรมาสหน้า เพื่อลดอาการเครื่องช้า
+      </p>
+    </footer>
+  </article>
+</div>

@@ -1,0 +1,123 @@
+---
+import { SEO } from 'astro-seo';
+// Self-hosted fonts (Thai + Latin subsets only)
+import '@fontsource/kanit/thai-500.css';
+import '@fontsource/kanit/thai-600.css';
+import '@fontsource/kanit/thai-700.css';
+import '@fontsource/kanit/latin-500.css';
+import '@fontsource/kanit/latin-600.css';
+import '@fontsource/kanit/latin-700.css';
+import '@fontsource/ibm-plex-sans-thai/thai-400.css';
+import '@fontsource/ibm-plex-sans-thai/thai-500.css';
+import '@fontsource/ibm-plex-sans-thai/thai-600.css';
+import '@fontsource/ibm-plex-sans-thai/latin-400.css';
+import '@fontsource/ibm-plex-sans-thai/latin-500.css';
+import '@fontsource/ibm-plex-sans-thai/latin-600.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import JsonLd from '../components/JsonLd.astro';
+import { SITE_URL, SITE_NAME } from '../config/site';
+import { DEFAULT_OG_IMAGE, organizationSchema, websiteSchema } from '../config/seo';
+import { breadcrumbSchema, type Crumb } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** breadcrumb trail (without home) — adds BreadcrumbList JSON-LD */
+  crumbs?: Crumb[];
+  /** WebPage subtype: 'AboutPage', 'ContactPage', 'CollectionPage' ... */
+  pageType?: string;
+  /** extra JSON-LD nodes merged into the page @graph */
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description, ogImage = DEFAULT_OG_IMAGE, noindex = false, crumbs = [], pageType = 'WebPage', schema = [] } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, SITE_URL).toString();
+const ogImageAbsolute = new URL(ogImage, SITE_URL).toString();
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    organizationSchema,
+    websiteSchema,
+    {
+      '@type': pageType,
+      '@id': `${canonicalURL}#webpage`,
+      url: canonicalURL,
+      name: title,
+      description,
+      inLanguage: 'th-TH',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: { '@id': `${SITE_URL}/#organization` },
+      primaryImageOfPage: ogImageAbsolute,
+    },
+    ...(crumbs.length ? [breadcrumbSchema([{ name: 'หน้าแรก', href: '/' }, ...crumbs])] : []),
+    ...schema,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111114" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonicalURL}
+      noindex={noindex}
+      nofollow={noindex}
+      openGraph={{
+        basic: { title, type: 'website', image: ogImageAbsolute, url: canonicalURL },
+        optional: { description, siteName: SITE_NAME, locale: 'th_TH' },
+        image: { width: 1200, height: 630, alt: `${SITE_NAME} — IT Support Outsource ดูแลระบบ IT องค์กรรายเดือน` },
+      }}
+      twitter={{ card: 'summary_large_image', title, description, image: ogImageAbsolute }}
+      extend={{ meta: [{ name: 'format-detection', content: 'telephone=no' }] }}
+    />
+
+    <JsonLd schema={graph} />
+  </head>
+  <body class="overflow-x-hidden font-sans text-[16px] leading-[1.75] text-ink antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[300] focus:bg-fix-400 focus:px-5 focus:py-2.5 focus:font-semibold">
+      ข้ามไปยังเนื้อหา
+    </a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-in');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px' },
+      );
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

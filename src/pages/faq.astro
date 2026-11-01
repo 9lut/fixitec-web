@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import FaqList from '../components/FaqList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import TapeBand from '../components/TapeBand.astro';
+import { pageSeo } from '../config/seo';
+import { faqGroups, allFaqs } from '../data/faq';
+import { faqSchema } from '../lib/schema';
+
+const seo = pageSeo.faq;
+const crumbs = [{ name: 'คำถามที่พบบ่อย', href: '/faq/' }];
+---
+
+<Layout title={seo.title} description={seo.description} crumbs={crumbs} schema={[faqSchema(allFaqs, '/faq/')]}>
+  <PageHero crumbs={crumbs} kicker="FAQ" title="คำถามที่พบบ่อย" lead="รวมคำถามที่ลูกค้าถามบ่อยก่อนเริ่มใช้บริการ หากไม่พบคำตอบที่ต้องการ ติดต่อทีมงานได้ทันที" />
+
+  <TapeBand />
+
+  <section class="bg-white pt-20 pb-14 lg:pt-28 lg:pb-20">
+    <div class="wrap grid gap-10 lg:grid-cols-[14rem_1fr] lg:gap-16">
+      <nav aria-label="หมวดคำถาม" class="lg:sticky lg:top-28 lg:self-start">
+        <ul class="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:gap-1">
+          {
+            faqGroups.map((g) => (
+              <li class="shrink-0">
+                <a href={`#${g.id}`} class="skew-tag block bg-fix-50 px-5 py-2 font-display text-[15px] font-medium hover:bg-fix-400 lg:px-4">
+                  {g.title} <span class="text-muted">({g.items.length})</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="space-y-14">
+        {
+          faqGroups.map((g) => (
+            <section id={g.id} class="scroll-mt-28" aria-labelledby={`${g.id}-title`}>
+              <h2 id={`${g.id}-title`} class="h-section mb-4">{g.title}</h2>
+              <FaqList items={g.items} />
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="ยังมีคำถามอื่นไหม?" desc="ทีมงานพร้อมตอบทุกข้อสงสัย และช่วยประเมินระบบ IT ขององค์กรคุณฟรี" />
+</Layout>

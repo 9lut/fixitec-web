@@ -1,0 +1,23 @@
+---
+/** Section heading: kicker (— label —) + h2 (+ optional lead and a right-aligned action slot) */
+interface Props {
+  kicker: string;
+  title: string;
+  lead?: string;
+  dark?: boolean;
+  center?: boolean;
+  id?: string;
+}
+
+const { kicker, title, lead, dark = false, center = false, id } = Astro.props;
+const hasAction = Astro.slots.has('default');
+---
+
+<div class:list={['flex flex-col gap-5', !center && hasAction && 'md:flex-row md:items-end md:justify-between', center && 'items-center text-center']} data-reveal>
+  <div class:list={['max-w-2xl', center && 'mx-auto']}>
+    <p class:list={['kicker', dark && 'kicker-dark']}>{kicker}</p>
+    <h2 id={id} class:list={['h-section mt-4', dark ? 'text-white' : 'text-ink']}>{title}</h2>
+    {lead && <p class:list={['mt-4 text-[17px] leading-relaxed', dark ? 'text-white/70' : 'text-muted']}>{lead}</p>}
+  </div>
+  {hasAction && <div class="shrink-0"><slot /></div>}
+</div>

@@ -1,0 +1,29 @@
+---
+import { Icon } from 'astro-icon/components';
+import { contact } from '../config/site';
+---
+
+<!-- mobile: sticky bottom bar (call / LINE / consult) -->
+<div class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-white/10 bg-ink pb-[env(safe-area-inset-bottom)] text-white md:hidden">
+  <a href={contact.phone.href} class="flex flex-col items-center gap-1 py-2.5 text-xs">
+    <Icon name="mdi:phone" class="size-6 text-fix-400" />โทร
+  </a>
+  <a href={contact.line.href} target="_blank" rel="noopener" class="flex flex-col items-center gap-1 py-2.5 text-xs">
+    <Icon name="simple-icons:line" class="size-6 text-[#06C755]" />LINE
+  </a>
+  <a href="/contact/" class="bg-fix-gradient flex flex-col items-center gap-1 py-2.5 text-xs font-semibold text-ink">
+    <Icon name="mdi:message-processing-outline" class="size-6" />ปรึกษาฟรี
+  </a>
+</div>
+
+<!-- desktop: floating LINE button -->
+<a
+  href={contact.line.href}
+  target="_blank"
+  rel="noopener"
+  aria-label={`แชท LINE ${contact.line.id}`}
+  class="fixed right-6 bottom-6 z-40 hidden size-14 place-items-center bg-[#06C755] text-white shadow-lg transition hover:scale-105 md:grid"
+  style="clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);"
+>
+  <Icon name="simple-icons:line" class="size-7" />
+</a>

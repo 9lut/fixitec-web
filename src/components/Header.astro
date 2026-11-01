@@ -1,0 +1,171 @@
+---
+import { Icon } from 'astro-icon/components';
+import Logo from './Logo.astro';
+import FxIcon from './FxIcon.astro';
+import { nav, contact } from '../config/site';
+import { services, serviceGroups, serviceHref, type ServiceGroup } from '../data/services';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const groups = Object.keys(serviceGroups) as ServiceGroup[];
+const link =
+  'relative flex h-full items-center gap-1 px-3 font-display text-[15px] font-medium transition-colors after:absolute after:inset-x-3 after:bottom-4 after:h-[3px] after:origin-left after:bg-fix-400 after:transition-transform hover:text-ink hover:after:scale-x-100';
+---
+
+<!-- utility strip (like the contact bar along the bottom of the banner) -->
+<div class="hidden bg-ink text-[13px] text-white/75 md:block">
+  <div class="wrap flex h-9 items-center justify-between">
+    <p class="font-display tracking-[0.18em] text-fix-300">IT SUPPORT OUTSOURCE · B2B IT PARTNER</p>
+    <div class="flex items-center gap-6">
+      <a href={contact.phone.href} class="inline-flex items-center gap-1.5 hover:text-fix-300"><Icon name="mdi:phone" class="size-4 text-fix-400" />{contact.phone.display}</a>
+      <a href={contact.line.href} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 hover:text-fix-300"><Icon name="simple-icons:line" class="size-4 text-fix-400" />LINE {contact.line.id}</a>
+      <a href={contact.email.href} class="inline-flex items-center gap-1.5 hover:text-fix-300"><Icon name="mdi:email-outline" class="size-4 text-fix-400" />{contact.email.display}</a>
+    </div>
+  </div>
+</div>
+
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent bg-white/95 backdrop-blur-md transition-[border-color,box-shadow] duration-300">
+  <div class="wrap flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+    <a href="/" aria-label="FIXITEC หน้าแรก" class="shrink-0">
+      <Logo class="h-8 w-auto sm:h-10" />
+    </a>
+
+    <nav aria-label="เมนูหลัก" class="hidden h-full lg:block">
+      <ul class="flex h-full items-center">
+        {
+          nav.map((item) =>
+            item.services ? (
+              <li class="group relative flex h-full items-center">
+                <a href={item.href} class:list={[link, isActive(item.href) ? 'text-ink after:scale-x-100' : 'text-ink-3 after:scale-x-0']} aria-haspopup="true">
+                  {item.label}
+                  <Icon name="mdi:chevron-down" class="size-4 transition-transform group-focus-within:rotate-180 group-hover:rotate-180" />
+                </a>
+                <!-- mega menu -->
+                <div class="invisible absolute top-full left-1/2 w-[46rem] -translate-x-1/2 bg-white opacity-0 shadow-[0_30px_60px_-24px_rgba(17,17,20,0.35)] transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <div class="h-1 bg-fix-gradient" />
+                  <div class="grid grid-cols-2 gap-8 p-6">
+                    {groups.map((g) => (
+                      <div>
+                        <span class="skew-tag inline-block bg-ink px-3.5 py-1 font-display text-xs font-semibold tracking-[0.12em] text-fix-400">{serviceGroups[g].label}</span>
+                        <ul class="mt-3 space-y-0.5">
+                          {services
+                            .filter((s) => s.group === g)
+                            .map((s) => (
+                              <li>
+                                <a href={serviceHref(s.slug)} class="group/item flex items-center gap-3 px-2.5 py-2 transition-colors hover:bg-fix-50">
+                                  <span class="grid size-10 shrink-0 place-items-center bg-fix-50 text-ink transition-colors group-hover/item:bg-ink group-hover/item:text-white">
+                                    <FxIcon name={s.icon} class="size-7" />
+                                  </span>
+                                  <span class="leading-tight">
+                                    <span class="block font-display text-[15px] font-medium">{s.title}</span>
+                                    <span class="block text-[13px] text-muted">{s.short}</span>
+                                  </span>
+                                </a>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                  <a href="/services/" class="flex items-center justify-between bg-ink px-6 py-3.5 font-display text-sm font-medium text-white hover:text-fix-300">
+                    ดูบริการทั้งหมด <Icon name="mdi:arrow-right" class="size-4" />
+                  </a>
+                </div>
+              </li>
+            ) : (
+              <li class="flex h-full items-center">
+                <a
+                  href={item.href}
+                  class:list={[link, isActive(item.href) ? 'text-ink after:scale-x-100' : 'text-ink-3 after:scale-x-0']}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contact/" class="btn btn-primary hidden !min-h-11 !px-6 sm:inline-flex">ปรึกษาฟรี</a>
+      <button id="menu-toggle" type="button" class="-mr-2 inline-flex size-11 items-center justify-center lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="เปิดเมนู">
+        <Icon name="mdi:menu" class="size-7" data-icon-open />
+        <Icon name="mdi:close" class="hidden size-7" data-icon-close />
+      </button>
+    </div>
+  </div>
+
+  <!-- mobile menu -->
+  <div id="mobile-menu" class="hidden max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-white lg:hidden">
+    <nav aria-label="เมนูมือถือ" class="wrap py-2">
+      <ul>
+        {
+          nav.map((item) =>
+            item.services ? (
+              <li class="border-b border-line">
+                <details>
+                  <summary class="flex cursor-pointer items-center justify-between py-4 font-display text-lg font-medium">
+                    {item.label}
+                    <span class="faq-plus grid size-7 place-items-center bg-fix-50 transition-transform"><Icon name="mdi:plus" class="size-5" /></span>
+                  </summary>
+                  <ul class="grid grid-cols-2 gap-x-3 pb-4">
+                    {services.map((s) => (
+                      <li>
+                        <a href={serviceHref(s.slug)} class="flex items-center gap-2 py-2 text-[15px] text-ink-3">
+                          <FxIcon name={s.icon} class="size-6 shrink-0" />
+                          {s.title}
+                        </a>
+                      </li>
+                    ))}
+                    <li class="col-span-2 pt-2">
+                      <a href="/services/" class="font-display text-[15px] font-semibold underline decoration-fix-400 decoration-2 underline-offset-4">ดูบริการทั้งหมด</a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            ) : (
+              <li class="border-b border-line">
+                <a href={item.href} class="flex items-center justify-between py-4 font-display text-lg font-medium">
+                  {item.label}
+                  <Icon name="mdi:chevron-right" class="size-5 text-fix-600" />
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+      <div class="grid grid-cols-2 gap-2 py-5">
+        <a href={contact.phone.href} class="btn btn-outline !px-3"><Icon name="mdi:phone" class="size-5" />โทร</a>
+        <a href="/contact/" class="btn btn-primary !px-3">ปรึกษาฟรี</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const setOpen = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    document.body.classList.toggle('overflow-hidden', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'ปิดเมนู' : 'เปิดเมนู');
+    toggle.querySelector('[data-icon-open]')!.classList.toggle('hidden', open);
+    toggle.querySelector('[data-icon-close]')!.classList.toggle('hidden', !open);
+  };
+
+  toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+  const onScroll = () => {
+    const scrolled = window.scrollY > 8;
+    header.classList.toggle('border-line', scrolled);
+    header.classList.toggle('shadow-[0_6px_24px_-16px_rgba(17,17,20,0.35)]', scrolled);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

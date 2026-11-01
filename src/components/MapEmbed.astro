@@ -1,0 +1,29 @@
+---
+/** Google Maps embed (no API key) with a link to open in the Maps app */
+import { Icon } from 'astro-icon/components';
+import { location } from '../config/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'aspect-[4/3] sm:aspect-[16/10]' } = Astro.props;
+const src = `https://maps.google.com/maps?q=${encodeURIComponent(location.mapQuery)}&z=13&hl=th&output=embed`;
+---
+
+<figure class="overflow-hidden border border-line bg-paper">
+  <iframe
+    src={src}
+    title={`แผนที่ ${location.address}`}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    class:list={['block w-full border-0', className]}
+    allowfullscreen
+  ></iframe>
+  <figcaption class="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 text-[15px]">
+    <span class="flex items-center gap-2"><Icon name="mdi:map-marker" class="size-5 text-redx" />{location.address}</span>
+    <a href={location.mapUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-display font-medium underline-offset-4 hover:underline">
+      เปิดใน Google Maps <Icon name="mdi:open-in-new" class="size-4" />
+    </a>
+  </figcaption>
+</figure>

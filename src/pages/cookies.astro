@@ -1,0 +1,45 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import { pageSeo } from '../config/seo';
+import { company, contact } from '../config/site';
+
+const seo = pageSeo.cookies;
+// TODO: ให้ฝ่ายกฎหมายตรวจทานก่อนใช้งานจริง · ถ้าเพิ่ม Google Analytics / Pixel ต้องอัปเดตหน้านี้และเพิ่มแบนเนอร์ขอความยินยอม
+---
+
+<LegalPage title="นโยบายคุกกี้" seoTitle={seo.title} description={seo.description} href="/cookies/" updated="24 ตุลาคม 2569">
+  <p>
+    นโยบายนี้อธิบายการใช้คุกกี้บนเว็บไซต์ FIXITEC ซึ่งดำเนินการโดย {company.th} คุกกี้คือไฟล์ข้อความขนาดเล็กที่เว็บไซต์บันทึกไว้ในเบราว์เซอร์ของคุณ
+    เพื่อจดจำการตั้งค่าหรือช่วยให้บริการบางอย่างทำงานได้
+  </p>
+
+  <h2>คุกกี้ที่เว็บไซต์นี้ใช้</h2>
+  <p>
+    ตัวเว็บไซต์ FIXITEC <strong>ไม่ได้ตั้งคุกกี้ของตัวเอง</strong> และไม่ได้ใช้คุกกี้เพื่อติดตามพฤติกรรมหรือโฆษณา
+    แต่บางหน้ามีการฝังบริการจากภายนอก ซึ่งผู้ให้บริการนั้นอาจตั้งคุกกี้ของตนเอง
+  </p>
+  <ul>
+    <li><strong>Google Maps</strong> — แผนที่ในหน้าแรกและหน้าติดต่อ Google อาจตั้งคุกกี้เพื่อการทำงานของแผนที่และความปลอดภัย</li>
+    <li><strong>LINE</strong> — เมื่อกดปุ่มแชท LINE ระบบจะพาไปยังแอปหรือเว็บไซต์ของ LINE ซึ่งอยู่ภายใต้นโยบายของ LINE</li>
+  </ul>
+
+  <h2>การจัดการคุกกี้</h2>
+  <p>
+    คุณสามารถลบหรือปิดการรับคุกกี้ได้จากการตั้งค่าเบราว์เซอร์ เช่น Chrome, Safari, Firefox หรือ Edge
+    การปิดคุกกี้ของบุคคลที่สามอาจทำให้แผนที่บางส่วนแสดงผลไม่สมบูรณ์ แต่ส่วนอื่นของเว็บไซต์ยังใช้งานได้ตามปกติ
+  </p>
+
+  <h2>นโยบายของผู้ให้บริการภายนอก</h2>
+  <ul>
+    <li><a href="https://policies.google.com/privacy?hl=th" target="_blank" rel="noopener" class="underline underline-offset-4">นโยบายความเป็นส่วนตัวของ Google</a></li>
+    <li><a href="https://line.me/th/terms/policy/" target="_blank" rel="noopener" class="underline underline-offset-4">นโยบายความเป็นส่วนตัวของ LINE</a></li>
+  </ul>
+
+  <h2>การเปลี่ยนแปลงนโยบาย</h2>
+  <p>หากเว็บไซต์เพิ่มเครื่องมือวิเคราะห์หรือการตลาดในอนาคต เราจะปรับปรุงนโยบายนี้และขอความยินยอมจากคุณก่อนใช้งาน</p>
+
+  <h2>ติดต่อ</h2>
+  <p>หากมีคำถามเกี่ยวกับนโยบายนี้ ติดต่อ {contact.email.display} หรือโทร {contact.phone.display}</p>
+
+  <p>ดูเพิ่มเติม: <a href="/privacy/" class="underline underline-offset-4">นโยบายความเป็นส่วนตัว</a></p>
+</LegalPage>

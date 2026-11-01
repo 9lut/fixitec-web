@@ -1,0 +1,29 @@
+---
+/** Promo coupon / ticket with perforation */
+import { Icon } from 'astro-icon/components';
+import { promo } from '../data/home';
+---
+
+<section aria-label="โปรโมชัน" class="bg-white py-14 lg:py-20">
+  <div class="wrap max-w-5xl">
+    <div class="relative grid overflow-hidden shadow-[0_24px_60px_-28px_rgba(17,17,20,0.45)] md:grid-cols-[auto_1fr]" data-reveal>
+      <div class="bg-fix-gradient flex items-center justify-center gap-3 px-10 py-7 md:flex-col md:py-10">
+        <Icon name="mdi:gift-outline" class="size-11 text-redx md:size-14" />
+        <span class="font-display text-5xl font-bold text-redx md:text-6xl">ฟรี!</span>
+      </div>
+
+      <div class="relative flex flex-col gap-5 bg-ink px-6 py-8 sm:px-10 md:flex-row md:items-center md:justify-between">
+        <span class="absolute top-0 bottom-0 left-0 hidden border-l-2 border-dashed border-white/25 md:block" aria-hidden="true"></span>
+        <span class="absolute -top-3 -left-3 hidden size-6 rounded-full bg-white md:block" aria-hidden="true"></span>
+        <span class="absolute -bottom-3 -left-3 hidden size-6 rounded-full bg-white md:block" aria-hidden="true"></span>
+        <div>
+          <p class="font-display text-xl font-semibold leading-snug text-white sm:text-2xl">
+            {promo.title.replace('IT Audit', '')}<span class="text-fix-gradient">IT Audit</span>
+          </p>
+          <p class="mt-2 text-white/65">{promo.desc}</p>
+        </div>
+        <a href="/contact/?topic=audit" class="btn btn-primary shrink-0">{promo.cta} <Icon name="mdi:arrow-right" class="arrow size-5" /></a>
+      </div>
+    </div>
+  </div>
+</section>

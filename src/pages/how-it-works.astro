@@ -1,0 +1,120 @@
+---
+import { Icon } from 'astro-icon/components';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/ui/SectionHead.astro';
+import StepList from '../components/StepList.astro';
+import CtaBand from '../components/CtaBand.astro';
+import TapeBand from '../components/TapeBand.astro';
+import { pageSeo } from '../config/seo';
+import { monthlyCycle, severity, reportItems } from '../data/process';
+import { getService, serviceHref } from '../data/services';
+
+const seo = pageSeo.howItWorks;
+const crumbs = [{ name: 'ขั้นตอนการทำงาน', href: '/how-it-works/' }];
+const portal = getService('it-care-portal')!;
+
+const toneClass: Record<string, string> = {
+  red: 'bg-redx text-white',
+  yellow: 'bg-brand text-ink',
+  gray: 'bg-paper text-ink border border-line',
+};
+---
+
+<Layout title={seo.title} description={seo.description} crumbs={crumbs}>
+  <PageHero crumbs={crumbs} kicker="ขั้นตอนการทำงาน" title="ทุกขั้นตอน ตรวจสอบได้" lead="ตั้งแต่วันแรกที่คุยกัน จนถึงการดูแลทุกเดือน ทุกขั้นตอนมีเจ้าของงาน มีเวลา และมีบันทึก" />
+
+  <TapeBand />
+
+  <section class="bg-white pt-20 pb-20 lg:pt-28 lg:pb-32">
+    <div class="wrap">
+      <SectionHead kicker="เริ่มต้น" title="5 ขั้นตอนเริ่มใช้บริการ" />
+      <div class="mt-12"><StepList showTime /></div>
+    </div>
+  </section>
+
+  <section class="slant bg-dots-dark bg-ink">
+    <div class="wrap">
+      <SectionHead kicker="ทุกเดือน" title="รอบการดูแลรายเดือน" lead="เมื่อเริ่มดูแลแล้ว ระบบของคุณจะอยู่ในรอบนี้ทุกเดือน" dark />
+      <ol class="swipe-row mt-8 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4">
+        {
+          monthlyCycle.map((m, i) => (
+            <li class="card relative p-5">
+              <span class="absolute top-5 right-5 font-display text-sm text-ink/30">0{i + 1}</span>
+              <Icon name={m.icon} class="size-7" />
+              <h3 class="mt-4 font-display text-lg font-semibold">{m.title}</h3>
+              <p class="mt-1 text-[15px] text-muted">{m.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="bg-white pt-20 pb-14 lg:pt-32 lg:pb-20">
+    <div class="wrap">
+      <SectionHead kicker="ความเร่งด่วน" title="ระดับการตอบสนอง" lead="ทุกเคสถูกจัดลำดับตามผลกระทบต่อการทำงาน เพื่อให้เรื่องสำคัญได้รับการแก้ก่อน" />
+      <div class="mt-10 overflow-hidden bg-white shadow-[var(--shadow-card)]">
+        <div class="hidden grid-cols-[8rem_1.4fr_1fr_1.2fr] bg-paper font-display text-[15px] font-medium text-muted md:grid">
+          <div class="p-4">ระดับ</div>
+          <div class="p-4">ตัวอย่าง</div>
+          <div class="p-4">ตอบรับ</div>
+          <div class="p-4">การดำเนินการ</div>
+        </div>
+        <ul class="divide-y divide-line">
+          {
+            severity.map((s) => (
+              <li class="grid gap-2 p-4 md:grid-cols-[8rem_1.4fr_1fr_1.2fr] md:gap-0 md:p-0">
+                <div class="md:p-4">
+                  <span class:list={['skew-tag inline-block px-3.5 py-0.5 font-display text-sm font-medium', toneClass[s.tone]]}>{s.level}</span>
+                </div>
+                <p class="text-[15px] md:p-4">{s.example}</p>
+                <p class="font-display font-medium md:p-4">{s.response}</p>
+                <p class="text-[15px] text-muted md:p-4">{s.action}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <p class="mt-3 text-[13px] text-muted">* เวลาตอบรับนับในเวลาทำการ รายละเอียดสุดท้ายเป็นไปตามสัญญาของแต่ละแพ็กเกจ</p>
+    </div>
+  </section>
+
+  <section class="bg-dots-dark relative overflow-hidden bg-ink py-14 text-white lg:py-20">
+    <div class="wrap grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 [&>*]:min-w-0">
+      <div>
+        <SectionHead kicker="IT Care Portal" title="ติดตามทุกงานได้ออนไลน์" lead={portal.intro} dark />
+        <ul class="mt-8 grid gap-2.5 sm:grid-cols-2">
+          {
+            portal.covers.map((c) => (
+              <li class="flex items-start gap-2.5 text-[15px] text-white/85">
+                <Icon name="mdi:check" class="mt-1 size-4 shrink-0 text-brand" />
+                {c}
+              </li>
+            ))
+          }
+        </ul>
+        <a href={serviceHref(portal.slug)} class="btn btn-outline-light mt-8">เกี่ยวกับ IT Care Portal</a>
+      </div>
+      <div class="bg-white p-6 text-ink sm:p-8">
+        <p class="kicker">รายงานรายเดือน</p>
+        <h3 class="mt-3 font-display text-2xl font-semibold">ในรายงานมีอะไรบ้าง</h3>
+        <ol class="mt-6 divide-y divide-line border-y border-line">
+          {
+            reportItems.map((r, i) => (
+              <li class="flex items-center gap-4 py-3.5">
+                <span class="font-display text-sm text-ink/40">0{i + 1}</span>
+                <span>{r}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <a href={serviceHref('monthly-report')} class="mt-6 inline-flex items-center gap-1.5 font-display font-medium underline-offset-4 hover:underline">
+          ดูรายละเอียด <Icon name="mdi:arrow-right" class="size-5" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>
